@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bitmind.dao.entity.Address;
+
 public class Wallet implements Serializable {
 
 	private static final long serialVersionUID = -1345549436226308766L;

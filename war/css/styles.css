@@ -2,3 +2,24 @@
 #content {
   padding: 60px;
 }
+
+
+label.error {
+	font-weight: bold;
+	color: red;
+	padding: 2px 8px;
+	margin-top: 2px;
+}
+
+
+label.valid {
+	margin-top: 4px;		
+	width: 20px;
+	height: 20px;
+	background: url('../img/valid.png')  no-repeat;
+}
+
+
+.alert2 {
+	display: none;
+}

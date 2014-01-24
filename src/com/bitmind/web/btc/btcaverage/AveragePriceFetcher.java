@@ -7,12 +7,12 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import com.bitmind.web.PriceReader;
+import com.bitmind.web.PriceFetcher;
 import com.bitmind.web.WebConnection;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class AveragePriceReader implements PriceReader {
+public class AveragePriceFetcher implements PriceFetcher {
 
 	private final Gson gson = new GsonBuilder().create();
 	private final static String DOMAIN = "http://api.bitcoinaverage.com/";

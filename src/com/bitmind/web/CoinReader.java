@@ -2,7 +2,7 @@ package com.bitmind.web;
 
 import org.joda.money.Money;
 
-import com.bitmind.domain.Address;
+import com.bitmind.dao.entity.Address;
 
 public interface CoinReader {
 

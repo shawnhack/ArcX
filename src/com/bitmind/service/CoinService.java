@@ -1,9 +1,13 @@
 package com.bitmind.service;
 
-import java.math.BigDecimal;
+import com.bitmind.dao.entity.Address;
 
 public interface CoinService {
 
-	public BigDecimal getAddressBalance(String addressString);
+	public Address getAddress(String addressString);
+
+	public Long getAddressBalance(String addressString);
+
+	public String getLastPrice();
 
 }

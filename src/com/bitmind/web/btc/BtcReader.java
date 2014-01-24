@@ -1,33 +1,52 @@
 package com.bitmind.web.btc;
 
-import org.joda.money.Money;
+import java.math.RoundingMode;
 
-import com.bitmind.domain.Address;
+import org.joda.money.Money;
+import org.joda.money.format.MoneyFormatter;
+import org.joda.money.format.MoneyFormatterBuilder;
+
+import com.bitmind.dao.entity.Address;
+import com.bitmind.domain.AssetType;
 import com.bitmind.util.PriceConverter;
-import com.bitmind.web.BlockReader;
+import com.bitmind.web.BlockFetcher;
 import com.bitmind.web.CoinReader;
-import com.bitmind.web.PriceReader;
+import com.bitmind.web.PriceFetcher;
 import com.bitmind.web.btc.blockchain.BlockchainAddress;
-import com.bitmind.web.btc.blockchain.BlockchainReader;
-import com.bitmind.web.btc.btcaverage.AveragePriceReader;
+import com.bitmind.web.btc.blockchain.BlockchainFetcher;
+import com.bitmind.web.btc.btcaverage.AveragePriceFetcher;
 
 public class BtcReader implements CoinReader {
 
-	private final BlockReader blockReader = new BlockchainReader();
-	private final PriceReader priceReader = new AveragePriceReader();
+	private final BlockFetcher blockReader = new BlockchainFetcher();
+	private final PriceFetcher priceReader = new AveragePriceFetcher();
 
 	@Override
 	public Address readAddress(String addressString) {
 
 		BlockchainAddress blockChainAddress = blockReader
 				.readAddress(addressString);
+
 		Address address = null;
 
 		if (blockChainAddress != null) {
 			address = new Address();
 			address.setAddress(blockChainAddress.getAddress());
-			address.setBalance(PriceConverter.satoshiToBtc(blockChainAddress
-					.getBalance()));
+			long balance = blockChainAddress.getBalance();
+			address.setBalance(balance);
+			address.setType(AssetType.BTC);
+
+			Money price = priceReader.getLastPrice();
+
+			price = price.multipliedBy(PriceConverter.satoshiToBtc(balance),
+					RoundingMode.DOWN);
+
+			MoneyFormatter formatter = new MoneyFormatterBuilder()
+					.appendCurrencySymbolLocalized().appendAmount()
+					.toFormatter();
+			String displayPrice = formatter.print(price);
+
+			address.setValue(displayPrice);
 		}
 
 		return address;

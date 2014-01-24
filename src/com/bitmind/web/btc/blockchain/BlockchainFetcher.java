@@ -2,11 +2,11 @@ package com.bitmind.web.btc.blockchain;
 
 import java.io.IOException;
 
-import com.bitmind.web.BlockReader;
+import com.bitmind.web.BlockFetcher;
 import com.bitmind.web.WebConnection;
 import com.google.gson.Gson;
 
-public class BlockchainReader implements BlockReader {
+public class BlockchainFetcher implements BlockFetcher {
 
 	private final Gson gson = new Gson();
 	private final static String DOMAIN = "http://blockchain.info/";

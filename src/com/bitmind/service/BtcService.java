@@ -1,10 +1,8 @@
 package com.bitmind.service;
 
-import java.math.BigDecimal;
-
 import org.springframework.stereotype.Service;
 
-import com.bitmind.domain.Address;
+import com.bitmind.dao.entity.Address;
 import com.bitmind.domain.Btc;
 import com.bitmind.domain.Coin;
 import com.bitmind.web.CoinReader;
@@ -14,16 +12,10 @@ import com.bitmind.web.btc.BtcReader;
 public class BtcService extends AbstractCoinService implements CoinService {
 
 	@Override
-	CoinReader getReader() {
-		if (coinReader == null) {
-			coinReader = new BtcReader();
-		}
-		return coinReader;
-	}
+	public Address getAddress(String addressString) {
 
-	@Override
-	Coin getNewCoin() {
-		return new Btc();
+		Address address = returnAddress(addressString);
+		return address;
 	}
 
 	/*
@@ -32,14 +24,41 @@ public class BtcService extends AbstractCoinService implements CoinService {
 	 * @see com.bitmind.manager.CoinService#getAddressBalance(java.lang.String)
 	 */
 	@Override
-	public BigDecimal getAddressBalance(String addressString) {
-		BigDecimal balance = null;
+	public Long getAddressBalance(String addressString) {
 
-		Address address = getReader().readAddress(addressString);
+		Long balance = null;
+		Address address = returnAddress(addressString);
+
 		if (address != null) {
 			balance = address.getBalance();
 		}
 
 		return balance;
+	}
+
+	@Override
+	Coin getNewCoin() {
+		return new Btc();
+	}
+
+	@Override
+	CoinReader getReader() {
+		if (coinReader == null) {
+			coinReader = new BtcReader();
+		}
+		return coinReader;
+	}
+
+	/**
+	 * @param addressString
+	 * @return
+	 */
+	private Address returnAddress(String addressString) {
+		if (addressString == null || addressString.isEmpty()) {
+			throw new ServiceException("Not a valid address");
+		}
+
+		Address address = getReader().readAddress(addressString);
+		return address;
 	}
 }

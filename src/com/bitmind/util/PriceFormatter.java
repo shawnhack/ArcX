@@ -4,12 +4,11 @@ import java.math.BigDecimal;
 
 public class PriceFormatter {
 
-	public static String toBtc(BigDecimal btc) {
+	public static String toBtc(long satoshi) {
 		String btcString = "";
+		BigDecimal btc = PriceConverter.satoshiToBtc(satoshi);
 
-		if (btc != null) {
-			btcString = btc.toPlainString() + " BTC";
-		}
+		btcString = btc.toPlainString() + " BTC";
 
 		return btcString;
 	}

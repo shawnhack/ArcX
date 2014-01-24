@@ -1,0 +1,83 @@
+
+<section layout:decorator="layout/layout" layout:fragment="content">
+
+
+	<form id="registerForm" action="registerProcess" method="post" th:object="${registerForm}"
+		class="form-horizontal">
+ 	
+ 	<p class="alert alert-danger" th:if="${#fields.hasErrors('global')}" th:errors="*{global}" />
+ 	
+ 	<div class="col-lg-12">
+ 	<div class="panel panel-default">
+ 	
+	 <div class="panel-heading">
+    	<h3 class="panel-title">Sign Up</h3>
+  	 </div>
+  	 
+ 	<div class="panel-body">
+
+		<div class="form-group">
+			<label for="inputEmail" class="col-lg-2 control-label">Email</label>
+			<div class="col-lg-4">
+				<input type="email" name="email" class="form-control"
+					id="inputEmail" th:errorclass="error-field" required="true"/>
+			</div>
+		</div>
+
+
+		<div class="form-group">
+			<label for="inputPassword" class="col-lg-2 control-label">Password</label>
+			<div class="col-lg-4">
+				<input type="password" name="password" class="form-control"
+					id="inputPassword" required="true" minlength="8"/>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="inputRepeatPassword" class="col-lg-2 control-label">Repeat Password</label>
+			<div class="col-lg-4">
+				<input type="password" name="passwordRepeat" class="form-control"
+					id="inputRepeatPassword" required="true" minlength="8"/>
+			</div>
+		</div>
+
+
+		<div class="form-group">
+			<div class="col-lg-offset-2 col-lg-4">
+				<input class="btn btn-success" type="submit" value="Sign Up"></input>
+			</div>
+		</div>
+		
+	</div>
+	</div>
+	</div>
+	
+	</form>
+
+	<script>
+		$(document).ready(function() {
+
+			$(".navbar li").removeClass('active');
+			$(".navbar a:contains('Sign Up')").parent().addClass('active');
+			
+			$("form").validate({
+					//errorElement: 'span',
+					//errorClass: "error-field",
+					//validClass: "valid-field",
+					success: "valid",
+					errorPlacement: function(error, element) {    
+						error.appendTo(element.closest('.form-group'));  
+					},
+			
+				   	rules: { 
+				   		passwordRepeat: {      
+				   			equalTo: "#inputPassword"    
+				   		}
+				   	}
+			});
+		});
+	</script>
+
+
+</section>
+

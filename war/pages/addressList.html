@@ -1,34 +1,57 @@
 
 <section layout:decorator="layout/layout" layout:fragment="content">
-	<div class="row">
-		<form name="user" action="addAddress" method="post" role="form" class="form-inline">
-			<label for="textAddress">Address:</label>
-			<div class="form-group">
-				<input type="text" name="address" class="form-control" id="textAddress" />
+	<head><title>Addresses</title></head>
+
+	
+		<form action="addAddress" method="post" class="form-horizontal">
+			
+			<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="form-group">
+					<label for="textAddress" class="col-lg-1 control-label">Address:</label>
+					<div class="col-lg-4">
+						<input type="text" name="address" class="form-control" id="textAddress" />
+					</div>
+					 <input type="submit" value="Add" class="btn btn-default" />
+				</div>
+			
 			</div>
-			<input type="submit" value="Add" class="btn btn-default" />
+			</div>
+			
 		</form>
-	</div>
+	
 
 	<br />
 
-	<div class="row">
-
+	<form  action="deleteAddress" method="post" class="form-horizontal">
 		<table class="table table-striped">
 			<thead>
 				<tr>
+					<th><input type="checkbox"/></th>
 					<th>Address</th>
 					<th>Balance</th>
+					<th>Worth</th>
 				</tr>
 			</thead>
 			<tbody th:if="${addressList}">
 			<tr th:each="address : ${addressList}">
+				<td><input name="addresses" type="checkbox" th:value="${address.address}" /></td>
 				<td th:text="${address.address}"></td>
 				<td th:text="${address.balanceView}"></td>
+				<td th:text="${address.value}"></td>
 			</tr>
 			</tbody>
 		</table>
-	</div>
+		 <input type="submit" value="Delete" class="btn btn-default" />
+	</form>
+	
+	
+		<script>
+		$(document).ready(function() {
+			$(".navbar li").removeClass('active');
+			$(".navbar a:contains('View Addresses')").parent().addClass('active');
+		});
+	   </script>
 
 </section>
 

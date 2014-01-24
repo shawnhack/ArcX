@@ -1,8 +1,13 @@
-package com.bitmind.view.form;
+package com.bitmind.form;
 
-public class SignupForm {
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
+public class RegisterForm {
 
 	private String username;
+	@Email
+	@NotEmpty
 	private String email;
 	private String password;
 	private String passwordRepeat;

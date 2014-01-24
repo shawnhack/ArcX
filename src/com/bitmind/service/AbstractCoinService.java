@@ -1,7 +1,5 @@
 package com.bitmind.service;
 
-import java.math.BigDecimal;
-
 import org.joda.money.format.MoneyFormatterBuilder;
 
 import com.bitmind.domain.Coin;
@@ -15,8 +13,6 @@ public abstract class AbstractCoinService {
 
 	abstract Coin getNewCoin();
 
-	public abstract BigDecimal getAddressBalance(String addressString);
-
 	public Coin buildCoin() {
 		Coin coin = getNewCoin();
 		String displayPrice = new MoneyFormatterBuilder().toFormatter().print(
@@ -25,4 +21,10 @@ public abstract class AbstractCoinService {
 
 		return coin;
 	};
+
+	public String getLastPrice() {
+		String displayPrice = new MoneyFormatterBuilder().toFormatter().print(
+				getReader().getLastPrice());
+		return displayPrice;
+	}
 }
