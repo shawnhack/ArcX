@@ -2,27 +2,36 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="
         http://www.springframework.org/schema/beans     
         http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context-3.2.xsd
         http://www.springframework.org/schema/mvc
-        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 
 	<!-- Activates various annotations to be detected in bean classes -->
 	<context:annotation-config />
-	
-	<!-- Scans the classpath for annotated components that will be auto-registered as Spring beans.For example @Controller and @Service. Make sure to set the correct base-package-->
+
+	<!-- Scans the classpath for annotated components that will be auto-registered 
+		as Spring beans.For example @Controller and @Service. Make sure to set the 
+		correct base-package -->
 	<context:component-scan base-package="com.bitmind" />
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
 	
-	<!-- Configures the annotation-driven Spring MVC Controller programming model. Note that, with Spring 3.0, this tag works in Servlet MVC only!  -->
-	<mvc:annotation-driven />
+	<aop:aspectj-autoproxy/>
 
 	<!-- Thymeleaf -->
 	<bean id="templateResolver"
-		class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
-		<property name="prefix" value="/pages/" />
+		 class="org.thymeleaf.templateresolver.ClassLoaderTemplateResolver">
+		<property name="prefix" value="pages/" />
 		<property name="suffix" value=".html" />
 		<property name="templateMode" value="HTML5" />
 		<property name="cacheable" value="false" />
@@ -34,7 +43,8 @@
 		<property name="additionalDialects">
 			<set>
 				<bean class="nz.net.ultraq.thymeleaf.LayoutDialect" />
-				<bean class="org.thymeleaf.extras.springsecurity3.dialect.SpringSecurityDialect"/>
+				<bean
+					class="org.thymeleaf.extras.springsecurity3.dialect.SpringSecurityDialect" />
 			</set>
 		</property>
 	</bean>
@@ -44,14 +54,40 @@
 		<property name="characterEncoding" value="UTF-8" />
 	</bean>
 
-	<!-- Validator -->	
+	<!-- Validator -->
 	<bean id="validator"
 		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
-		
-	<!-- Message Source -->	
-	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
-		<property name="basename" value="messages"/>
+
+	<!-- Message Source -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="messages" />
 	</bean>
-		
-		
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="transactions-optional" />		
+	</bean>
+	
+	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="save*" rollback-for="Throwable" propagation="REQUIRED" />
+			<tx:method name="update*" rollback-for="Throwable" propagation="REQUIRED" />
+			<tx:method name="delete*" rollback-for="Throwable" propagation="REQUIRED" />
+			<tx:method name="*" read-only="true" propagation="NOT_SUPPORTED" />
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config>
+		<aop:pointcut id="serviceOperation"
+			expression="execution(* com.bitmind.service.*.*(..))" />
+		<aop:advisor advice-ref="transactionAdvice" pointcut-ref="serviceOperation"
+			order="99" />
+	</aop:config>
+
+
 </beans>

@@ -1,0 +1,61 @@
+
+<section layout:decorator="layout/layout" layout:fragment="content">
+	<head><title>Addresses</title></head>
+
+		<form th:action="@{/addAddress}" method="post" class="form-horizontal">
+			<input type="hidden" name="type" th:value="${type}" />
+			<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="form-group">
+					<label for="textAddress" class="col-lg-1 control-label">Address:</label>
+					<div class="col-lg-5">
+						<input type="text" name="address" class="form-control" id="textAddress" />
+					</div>
+					 <input type="submit" value="Add" class="btn btn-default" />
+				</div>
+			
+			</div>
+			</div>
+		</form>
+	
+	<br />
+	
+	<h1 th:text="${type}"></h1>
+
+	<form th:action="@{/deleteAddress}" method="post" class="form-horizontal" th:if="${wallet != null and not #lists.isEmpty(wallet.addresses)}">
+		<input type="hidden" name="type" th:value="${type}" />
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th><input type="checkbox" id="selectAll"/></th>
+					<th>Address</th>
+					<th>Balance</th>
+					<th>Worth</th>
+				</tr>
+			</thead>
+			<tbody>
+			<tr th:each="address : ${wallet.addresses}">
+				<td><input name="addresses" type="checkbox" th:value="${address.address}" /></td>
+				<td th:text="${address.address}"></td>
+				<td th:text="${address.balanceView}"></td>
+				<td th:text="${address.worth}"></td>
+			</tr>
+			<tr style="font-weight: bold"><td/><td>Total: </td><td th:text="${wallet.totalBalance}"></td><td th:text="${wallet.totalWorth}"></td></tr>
+			</tbody>
+		</table>
+		 <input type="submit" value="Delete" class="btn btn-default"  th:if="${wallet.addresses}"/>
+	</form>
+	
+	
+		<script>
+		$(document).ready(function() {
+			activateLink("View Addresses");
+			$selectAll = $("#selectAll")
+			$selectAll.click( function(){
+				$("input[name=addresses]").prop("checked", $selectAll.prop("checked"));
+			});
+		});
+	   </script>
+
+</section>
+

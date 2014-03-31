@@ -10,6 +10,4 @@ public interface CoinReader {
 
 	public Money getLastPrice();
 
-	public long getMintedCount();
-
 }

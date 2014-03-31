@@ -1,0 +1,39 @@
+
+<section layout:decorator="layout/layout" layout:fragment="content">
+	<head><title>Users</title></head>
+
+
+	<form th:action="@{/deleteUser}" method="post" class="form-horizontal">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th><input type="checkbox" id="selectAll"/></th>
+					<th>Username</th>
+					<th>Email</th>
+				</tr>
+			</thead>
+			<tbody>
+			<tr th:each="user : ${users}">
+				<td><input name="ids" type="checkbox" th:value="${user.username}" /></td>
+				<td th:text="${user.username}"></td>
+				<td th:text="${user.email}"></td>
+
+			</tr>
+			</tbody>
+		</table>
+		 <input type="submit" value="Delete" class="btn btn-default"/>
+	</form>
+	
+	
+		<script>
+		$(document).ready(function() {
+			activateLink("User List");
+			$selectAll = $("#selectAll")
+			$selectAll.click( function(){
+				$("input[name=ids]").prop("checked", $selectAll.prop("checked"));
+			});
+		});
+	   </script>
+
+</section>
+

@@ -1,6 +1,9 @@
 package com.bitmind.service;
 
+import org.joda.money.Money;
+
 import com.bitmind.dao.entity.Address;
+import com.bitmind.domain.AssetType;
 
 public interface CoinService {
 
@@ -8,6 +11,8 @@ public interface CoinService {
 
 	public Long getAddressBalance(String addressString);
 
-	public String getLastPrice();
+	public Money getLastPrice();
+
+	public void buildReader(AssetType type);
 
 }

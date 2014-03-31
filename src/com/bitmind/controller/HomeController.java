@@ -11,8 +11,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class HomeController extends AbstractController {
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String index(Model model) {
-		System.out.println("Index");
+	public String index(Model model, HttpServletRequest request) {
+
+		// Enumeration attributeNames =
+		// request.getSession().getAttributeNames();
+		//
+		// while (attributeNames.hasMoreElements()) {
+		// final Object attributeName = attributeNames.nextElement();
+		// System.out.println(attributeName);
+		// }
+
 		return "home";
 	}
 
@@ -28,10 +36,10 @@ public class HomeController extends AbstractController {
 		String errorMessage = "";
 
 		if (throwable != null) {
-			errorMessage = throwable.getMessage();
+			errorMessage = throwable.getLocalizedMessage();
 		}
 
-		model.addAttribute("errorMessage", errorMessage.toString());
+		model.addAttribute("errorMessage", errorMessage);
 
 		return "error";
 	}

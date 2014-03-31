@@ -1,20 +1,30 @@
 package com.bitmind.dao.entity;
 
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 import com.bitmind.domain.AssetType;
-import com.bitmind.util.PriceFormatter;
-import com.googlecode.objectify.annotation.Entity;
+import com.bitmind.util.PriceConverter;
 
 @Entity
-public class Address extends AbstractEntity implements Serializable {
+public class Address extends AbstractEntity implements Comparable<Address> {
 
 	private static final long serialVersionUID = 1L;
 
 	private String address;
 	private AssetType type;
-	private long balance;
-	private String value;
+	private Long balance = new Long(0);
+
+	@Transient
+	private String worth;
+
+	public Address() {
+	}
+
+	public Address(String address) {
+		super();
+		this.address = address;
+	}
 
 	public Address(String address, AssetType type, long balance) {
 		super();
@@ -23,48 +33,9 @@ public class Address extends AbstractEntity implements Serializable {
 		this.balance = balance;
 	}
 
-	public Address(String address) {
-		super();
-		this.address = address;
-	}
-
-	public Address() {
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getBalanceView() {
-		return PriceFormatter.toBtc(balance);
-	}
-
-	public long getBalance() {
-		return balance;
-	}
-
-	public void setBalance(long balance) {
-		this.balance = balance;
-	}
-
-	public AssetType getType() {
-		return type;
-	}
-
-	public void setType(AssetType type) {
-		this.type = type;
-	}
-
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((address == null) ? 0 : address.hashCode());
-		return result;
+	public int compareTo(Address a2) {
+		return a2.getBalance().compareTo(this.getBalance());
 	}
 
 	@Override
@@ -84,12 +55,48 @@ public class Address extends AbstractEntity implements Serializable {
 		return true;
 	}
 
-	public String getValue() {
-		return value;
+	public String getAddress() {
+		return address;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public Long getBalance() {
+		return balance;
+	}
+
+	public String getBalanceView() {
+		return PriceConverter.getDisplayBalance(balance, type.getSymbol());
+	}
+
+	public AssetType getType() {
+		return type;
+	}
+
+	public String getWorth() {
+		return worth;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((address == null) ? 0 : address.hashCode());
+		return result;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public void setBalance(Long balance) {
+		this.balance = balance;
+	}
+
+	public void setType(AssetType type) {
+		this.type = type;
+	}
+
+	public void setWorth(String worth) {
+		this.worth = worth;
 	}
 
 }

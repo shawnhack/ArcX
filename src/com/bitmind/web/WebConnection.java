@@ -4,68 +4,29 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.bitmind.util.PropertyManager;
+import com.google.appengine.api.utils.SystemProperty;
 
-public final class WebConnection {
+public class WebConnection implements Connection {
 
-	private static final String PROXY_PORT = PropertyManager.PROXY_PORT;
-	private static final String PROXY_HOST = PropertyManager.PROXY_HOST;
-	private static final String USER_AGENT = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)";
+	private final Logger log = LoggerFactory.getLogger(WebConnection.class);
 
-	static {
+	public WebConnection() {
+		super();
 		setProxy();
-	}
-
-	private static void setProxy() {
-		Properties systemProperties = System.getProperties();
-		systemProperties.setProperty("http.proxyHost", PROXY_HOST);
-		systemProperties.getProperty("http.proxyPort", PROXY_PORT);
-	}
-
-	/**
-	 * @param urlString
-	 * @return
-	 * @throws IOException
-	 */
-	public static String loadPage(String urlString) throws IOException {
-
-		InputStream in = null;
-
-		String page = "";
-
-		try {
-			URL url = new URL(urlString);
-			HttpURLConnection connection = (HttpURLConnection) url
-					.openConnection();
-
-			connection.setRequestProperty("User-Agent", USER_AGENT);
-			connection.connect();
-			int responseCode = connection.getResponseCode();
-
-			if (responseCode == HttpURLConnection.HTTP_OK) {
-				in = connection.getInputStream();
-			}
-
-		} catch (Exception ex) {
-			throw new IOException("Error connecting");
-		}
-
-		if (in != null) {
-			page = inputStreamToString(in);
-		}
-
-		return page;
 	}
 
 	/**
 	 * @param is
 	 * @return
 	 */
-	private static String inputStreamToString(InputStream is) {
+	private String inputStreamToString(InputStream is) {
 
 		BufferedReader br = null;
 		StringBuilder sb = new StringBuilder();
@@ -93,4 +54,72 @@ public final class WebConnection {
 
 	}
 
+	private boolean isDev() {
+		return SystemProperty.environment.value() == SystemProperty.Environment.Value.Development;
+	}
+
+	/**
+	 * @param urlString
+	 * @return
+	 * @throws IOException
+	 */
+	@Override
+	public String loadPage(String urlString) throws IOException {
+
+		InputStream in = null;
+		StringBuilder sb = new StringBuilder();
+		String page = "";
+
+		try {
+			URL url = new URL(urlString);
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					url.openStream()));
+			String line;
+
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+			}
+			reader.close();
+
+			System.out.println(sb.toString());
+			//
+			// HttpURLConnection connection = (HttpURLConnection) url
+			// .openConnection();
+			//
+			// if (isDev()) {
+			// connection.setRequestProperty("User-Agent",
+			// PropertyManager.USER_AGENT);
+			// }
+			// connection.connect();
+			// int responseCode = connection.getResponseCode();
+			//
+			// if (responseCode == HttpURLConnection.HTTP_OK) {
+			// in = connection.getInputStream();
+			// } else {
+			// log.error("Bad response: " + responseCode);
+			// }
+
+		} catch (Exception ex) {
+			throw new IOException("Error connecting");
+		}
+
+		// if (in != null) {
+		// page = inputStreamToString(in);
+		// }
+
+		return sb.toString();
+	}
+
+	private void setProxy() {
+
+		log.info(SystemProperty.environment.value().toString());
+
+		if (isDev()) {
+			Properties systemProperties = System.getProperties();
+			systemProperties.setProperty("http.proxyHost",
+					PropertyManager.PROXY_HOST);
+
+		}
+	}
 }

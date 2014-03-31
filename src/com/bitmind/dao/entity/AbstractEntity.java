@@ -1,17 +1,44 @@
 package com.bitmind.dao.entity;
 
-import com.googlecode.objectify.annotation.Id;
+import java.io.Serializable;
 
-public abstract class AbstractEntity {
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+
+import org.datanucleus.api.jpa.annotations.Extension;
+
+@Entity
+@MappedSuperclass
+@SuppressWarnings("serial")
+public abstract class AbstractEntity implements Serializable {
 
 	@Id
-	private Long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
+	private String id;
 
-	public Long getId() {
+	@Basic
+	@Extension(vendorName = "datanucleus", key = "gae.parent-pk", value = "true")
+	private String parentKey;
+
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
+
+	public String getParentKey() {
+		return parentKey;
+	}
+
+	public void setParentKey(String parentKey) {
+		this.parentKey = parentKey;
+	}
+
 }

@@ -9,6 +9,9 @@ public class AddressForm {
 	@NotEmpty
 	private String address;
 
+	@NotEmpty
+	private String type;
+
 	private List<String> addresses;
 
 	public String getAddress() {
@@ -30,6 +33,14 @@ public class AddressForm {
 
 	public void setAddresses(List<String> addresses) {
 		this.addresses = addresses;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

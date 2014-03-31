@@ -1,39 +1,60 @@
 package com.bitmind.dao.entity;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Transient;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.googlecode.objectify.annotation.Embed;
-import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Ignore;
-import com.googlecode.objectify.annotation.Index;
-
 @Entity
-public class User extends AbstractEntity implements UserDetails, Serializable {
+public class User extends AbstractEntity implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
-	@Index
-	private String email;
-	private String username;
-	private String password;
-	private int role;
-	@Embed
-	private Portfolio portfolio = new Portfolio();
-	@Ignore
+	@ManyToOne
+	private Parent parent;
+
+	@Transient
 	private final boolean accountNonExpired;
-	@Ignore
+
+	@Transient
 	private final boolean accountNonLocked;
-	@Ignore
-	private final boolean credentialsNonExpired;
-	@Ignore
-	private final boolean enabled;
-	@Ignore
+
+	@Transient
 	private List<GrantedAuthority> authorities;
+
+	@Transient
+	private final boolean credentialsNonExpired;
+
+	@Basic
+	private String email;
+
+	@Transient
+	private final boolean enabled;
+
+	@Basic
+	private String lowercaseUsername;
+
+	@Basic
+	private String password;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	private Portfolio portfolio;
+
+	@Basic
+	private int role;
+
+	@Basic
+	private String username;
 
 	public User() {
 		super();
@@ -41,10 +62,7 @@ public class User extends AbstractEntity implements UserDetails, Serializable {
 		this.accountNonLocked = true;
 		this.credentialsNonExpired = true;
 		this.enabled = true;
-	}
-
-	public void setAuthorities(List<GrantedAuthority> authorities) {
-		this.authorities = authorities;
+		this.portfolio = new Portfolio();
 	}
 
 	public User(String email, String username, String password) {
@@ -53,15 +71,11 @@ public class User extends AbstractEntity implements UserDetails, Serializable {
 
 	public User(String email, String username, String password,
 			List<GrantedAuthority> authorities) {
-		super();
+		this();
 		this.email = email;
 		this.username = username;
 		this.password = password;
 		this.authorities = authorities;
-		this.accountNonExpired = true;
-		this.accountNonLocked = true;
-		this.credentialsNonExpired = true;
-		this.enabled = true;
 	}
 
 	@Override
@@ -73,9 +87,25 @@ public class User extends AbstractEntity implements UserDetails, Serializable {
 		return email;
 	}
 
+	public String getLowercaseUsername() {
+		return lowercaseUsername;
+	}
+
+	public Parent getParent() {
+		return parent;
+	}
+
 	@Override
 	public String getPassword() {
 		return password;
+	}
+
+	public Portfolio getPortfolio() {
+		if (portfolio == null) {
+			portfolio = new Portfolio();
+		}
+
+		return portfolio;
 	}
 
 	public int getRole() {
@@ -107,12 +137,38 @@ public class User extends AbstractEntity implements UserDetails, Serializable {
 		return enabled;
 	}
 
+	@PrePersist
+	@PreUpdate
+	public void prePersist() {
+		if (username != null) {
+			lowercaseUsername = username.toLowerCase();
+		} else {
+			username = null;
+		}
+	}
+
+	public void setAuthorities(List<GrantedAuthority> authorities) {
+		this.authorities = authorities;
+	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
+	public void setLowercaseUsername(String lowercaseUsername) {
+		this.lowercaseUsername = lowercaseUsername;
+	}
+
+	public void setParent(Parent parent) {
+		this.parent = parent;
+	}
+
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public void setPortfolio(Portfolio portfolio) {
+		this.portfolio = portfolio;
 	}
 
 	public void setRole(int role) {
@@ -121,14 +177,6 @@ public class User extends AbstractEntity implements UserDetails, Serializable {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public Portfolio getPortfolio() {
-		return portfolio;
-	}
-
-	public void setPortfolio(Portfolio portfolio) {
-		this.portfolio = portfolio;
 	}
 
 }

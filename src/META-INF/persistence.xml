@@ -6,10 +6,23 @@
 
     <persistence-unit name="transactions-optional">
         <provider>org.datanucleus.api.jpa.PersistenceProviderImpl</provider>
+        <class>com.bitmind.dao.entity.AbstractEntity</class>
+        <class>com.bitmind.dao.entity.Parent</class>
+        <class>com.bitmind.dao.entity.User</class>
+        <class>com.bitmind.dao.entity.Portfolio</class>
+        <class>com.bitmind.dao.entity.Wallet</class>
+        <class>com.bitmind.dao.entity.Address</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        
         <properties>
-            <property name="datanucleus.NontransactionalRead" value="true"/>
-            <property name="datanucleus.NontransactionalWrite" value="true"/>
+        	<property name="datanucleus.NontransactionalRead" value="true"/>
+      		<property name="datanucleus.NontransactionalWrite" value="true"/>
+        	<property name="datanucleus.appengine.datastoreReadConsistency" value="STRONG" />
             <property name="datanucleus.ConnectionURL" value="appengine"/>
+            <property name="datanucleus.singletonEMFForName" value="true"/>
+			<property name="datanucleus.appengine.ignorableMetaDataBehavior" value="NONE" />
+			<property name="datanucleus.appengine.datastoreEnableXGTransactions" value="true"/>
+
         </properties>
     </persistence-unit>
 </persistence>

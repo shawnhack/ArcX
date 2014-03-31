@@ -8,7 +8,7 @@ xmlns="http://java.sun.com/xml/ns/javaee"
 	<servlet>
 		<servlet-name>spring</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
+        <load-on-startup>1</load-on-startup>
 	</servlet>
 	
 	<servlet-mapping>
@@ -37,7 +37,7 @@ xmlns="http://java.sun.com/xml/ns/javaee"
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-			/WEB-INF/spring-servlet.xml
+		 	/WEB-INF/spring-servlet.xml
 			/WEB-INF/spring-security.xml
 		</param-value>
 	</context-param>
@@ -63,5 +63,16 @@ xmlns="http://java.sun.com/xml/ns/javaee"
 		<error-code>500</error-code>    
 		<location>/error</location>
 	</error-page>
+	
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>login</web-resource-name>
+			<url-pattern>/login*</url-pattern>
+			<url-pattern>/register*</url-pattern>
+		</web-resource-collection>
+		<user-data-constraint>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
 
 </web-app>

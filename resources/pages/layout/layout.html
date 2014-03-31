@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+  
+  <head>
+    <title>Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="../css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="../css/styles.css" rel="stylesheet"/>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="http://jquery.bassistance.de/validate/jquery.validate.js"></script>
+    <script src="http://jquery.bassistance.de/validate/additional-methods.js"></script>
+  </head>
+  
+  <body>
+  	 <!--Header -->
+  	 <div id="header">
+	      <div layout:fragment="header" class="navbar navbar-default navbar-fixed-top" role="navigation">
+	       <div class="container">
+	        <div class="navbar-header">
+	          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	            <span class="sr-only">Toggle navigation</span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	          </button>
+	          <a class="navbar-brand" href="/" th:text="#{app.name}">ArcX</a>
+	        </div>
+	        
+	        <div class="navbar-collapse collapse">
+	          <ul class="nav navbar-nav">
+	            <li class="active"><a href="/">Home</a></li>
+	            <li><a href="/userList">Users</a></li>
+	            <li sec:authorize="isAuthenticated()"><a href="/dashboard">Dashboard</a></li>
+	          </ul>
+	          
+
+	          <div sec:authorize="isAuthenticated()">
+		          <ul class="nav navbar-nav navbar-right">
+		          <li class="dropdown">
+			        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span sec:authentication="name"></span><b class="caret"></b></a>
+			        <ul class="dropdown-menu">
+			          <li><a href="#">Profile</a></li>
+			           <li><a href="#">Settings</a></li>
+			          <li class="divider"></li>
+			          <li><a href="/logout">Log out</a></li>
+			        </ul>
+			      </li>
+			      </ul>
+	          </div>
+
+	       		<div sec:authorize="!isAuthenticated()">
+	       		 <ul class="nav navbar-nav navbar-right">
+		            <li><a href="/login">Sign In</a></li>
+		            <li><a href="/register">Sign Up</a></li>
+		        </ul>
+	     		</div>
+	     		
+	     		
+	        </div>
+	        </div>
+	      </div>
+	</div>
+	
+	<!--Body -->
+	<div id="content"  class="container">
+		<!--Messages -->
+		<div class="alert alert-success alert-dismissable" th:if="${success_msg}">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<div th:text="${success_msg}"></div>
+		</div>
+		 <div class="alert alert-danger" th:if="${error_msg}">
+		 	<div th:text="${error_msg}"></div>
+		 </div>
+
+		<div layout:fragment="content"></div>
+	</div>
+	
+		
+	  <!--Footer -->
+	  <div id="footer">	
+		  <footer layout:fragment="footer" class="navbar-fixed-bottom">
+		  	<div class="container">
+	        		&copy; Company 2014
+	        </div>
+		  </footer>
+	  </div>
+
+  </body>
+</html>

@@ -18,7 +18,7 @@ public class PropertyManager {
 	}
 
 	public static final String PROXY_HOST = findStringAttribute("proxy.host");
-	public static final String PROXY_PORT = findStringAttribute("proxy.port");
+	public static final String USER_AGENT = findStringAttribute("user.agent");
 
 	/**
 	 * Gets a String attribute from the properties file.

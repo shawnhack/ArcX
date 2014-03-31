@@ -1,51 +1,78 @@
 package com.bitmind.dao.entity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 
 import com.bitmind.domain.AssetType;
-import com.googlecode.objectify.annotation.Embed;
-import com.googlecode.objectify.annotation.Entity;
+import com.bitmind.util.PriceConverter;
 
 @Entity
-public class Portfolio extends AbstractEntity implements Serializable {
+public class Portfolio extends AbstractEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	@Embed
-	private Set<Address> addresses = new HashSet<Address>();
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private List<Wallet> wallets;
 
-	public boolean addAddress(String addressString, AssetType type, long balance) {
-		Address address = new Address(addressString, type, balance);
-		return addAddress(address);
+	public User getUser() {
+		return user;
 	}
 
-	public boolean addAddress(Address address) {
-		return addresses.add(address);
+	public void setUser(User user) {
+		this.user = user;
 	}
 
-	public Set<Address> getAddresses() {
-		return addresses;
+	@OneToOne(fetch = FetchType.LAZY)
+	private User user;
+
+	public Portfolio() {
+		super();
 	}
 
-	public void setAddresses(Set<Address> addresses) {
-		this.addresses = addresses;
-	}
+	public Wallet getWallet(AssetType type) {
 
-	public boolean deleteAddresses(List<String> addressList) {
-		List<Address> removing = new ArrayList<Address>();
+		for (Wallet wallet : wallets) {
+			AssetType atype = wallet.getType();
 
-		for (String address : addressList) {
-			removing.add(new Address(address));
+			if (atype == type) {
+				return wallet;
+			}
 		}
-		return addresses.removeAll(removing);
+
+		Wallet wallet = new Wallet();
+		wallet.setType(type);
+		wallets.add(wallet);
+
+		return wallet;
 	}
 
-	public boolean hasAddress(String address) {
-		return addresses.contains(new Address(address));
+	public List<Wallet> getWallets() {
+		if (wallets == null) {
+			wallets = new ArrayList<Wallet>();
+		}
+		return wallets;
+	}
+
+	public void setWallets(List<Wallet> wallets) {
+		this.wallets = wallets;
+	}
+
+	public String getTotalWorth() {
+		Money total = Money.zero(CurrencyUnit.USD);
+
+		for (Wallet wallet : wallets) {
+			total = total.plus(wallet.getTotalWorthValue());
+		}
+		return PriceConverter.getDisplayPrice(total);
 	}
 
 }

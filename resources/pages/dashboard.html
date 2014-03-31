@@ -1,0 +1,50 @@
+
+<section layout:decorator="layout/layout" layout:fragment="content">
+	<head><title>Dashboard</title></head>
+	
+	
+		<form th:action="@{/addCoin}" method="post" class="form-horizontal">
+	
+
+	<div class="row">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Asset</th>
+					<th>Total</th>
+					<th>Total Worth</th>
+				</tr>
+			</thead>
+			<tbody>
+			<tr th:each="wallet : ${portfolio.wallets}">
+				<td><a th:text="${wallet.type}" th:href="@{viewAddresses/} + ${wallet.type}"></a></td>
+				<td th:text="${wallet.totalBalance}"></td>
+				<td th:text="${wallet.totalWorth}"></td>
+			</tr>
+			<tr th:if="${not #lists.isEmpty(types)}"><td>
+				<div class="form-group">
+					<div class="col-lg-4">
+						<select name="coin" class="form-control" id="textCoin">
+  							<option th:each="coin : ${types}" th:value="${coin}" th:text="${coin}" th:selected="${coin == T(com.bitmind.domain.AssetType).BTC}"></option>
+						</select>
+					</div>
+					 <input type="submit" value="Add" class="btn btn-default" />
+				</div>
+				</td><td/><td/>
+			</tr>
+			<tr style="font-weight: bold"><td>Net Worth</td><td/><td th:text="${portfolio.totalWorth}"></td></tr>
+			</tbody>
+		</table>
+	</div>
+	
+	</form>
+	
+		<script>
+			$(document).ready(function() {
+				activateLink("Dashboard");
+			});
+	   </script>
+	
+	
+</section>
+

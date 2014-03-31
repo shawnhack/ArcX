@@ -1,19 +1,33 @@
 package com.bitmind.domain;
 
-import java.io.Serializable;
 
-public abstract class Coin implements Serializable {
+public class Coin implements Asset {
 
-	private static final long serialVersionUID = 1L;
+	private String balance;
+	private String worth;
 
-	private String price;
-
-	public String getPrice() {
-		return price;
+	@Override
+	public String getBalance() {
+		return balance;
 	}
 
-	public void setPrice(String price) {
-		this.price = price;
+	public void setBalance(String balance) {
+		this.balance = balance;
+	}
+
+	@Override
+	public String getWorth() {
+		return worth;
+	}
+
+	public void setWorth(String worth) {
+		this.worth = worth;
+	}
+
+	@Override
+	public String getPrice() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
